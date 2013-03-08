@@ -26,10 +26,18 @@ public class Scheduler {
 			dh.fileOneReader(filePath1, Graph);
 			System.out.println("Total vertices: " + Graph.totalVertices);
 			System.out.println("Total edges: " + Graph.totalEdges);
-			System.out.println("Graphs vertices Readout:\n");
+			
+			System.out.println("Graphs vertices Readout:");
 			for (int i = 0 ; i < Graph.Vertices.size(); i ++){
 				System.out.println(Graph.Vertices.get(i).vTag);
 			}
+			System.out.println("created "+ Graph.Edges.size() + " edges...");
+			System.out.println("Graphs edges Readout:");
+			for (int i = 0 ; i < Graph.Edges.size(); i ++){
+				System.out.println(Graph.Edges.get(i).getReadout());
+			}
+			
+			
 			
 		}catch (Exception e){//Catch exception if any
 			System.err.println("Error: " + e.getMessage());

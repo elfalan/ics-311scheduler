@@ -15,8 +15,10 @@ public class Edge {
 		path[0] = v1;
 		path[1] = v2;
 	}
-	public void setWeight(int w){
-		weight = w;
+	
+	public String getReadout(){
+		String readout = path[0].vTag +"," + path[1].vTag + "," + weight;
+		return readout;
 	}
 	
 	public Vertex getSource(){

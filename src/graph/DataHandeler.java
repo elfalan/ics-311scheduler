@@ -5,8 +5,13 @@ import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
+import java.sql.Date;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Formatter;
 import java.util.List;
 import java.util.Scanner;
 public class DataHandeler{
@@ -14,36 +19,6 @@ public class DataHandeler{
 	public DataHandeler(){
 
 	}
-
-	//			FileInputStream fstream = new FileInputStream(args[0]); 
-	//
-	//			// Get the object of DataInputStream
-	//			DataInputStream in = new DataInputStream(fstream);
-	//			BufferedReader br = new BufferedReader(new InputStreamReader(in));
-	//			String strLine;
-	//			//Read File Line By Line
-	//			while ((strLine = br.readLine()) != null)   {
-	//				// Print the content on the console
-	//
-	//				System.out.println (strLine);
-	//			}
-	//			//Close the input stream
-	//			in.close();
-
-
-	//
-	//		for (int i= 0; i < 6; i++){
-	//			Vertex V = new Vertex(i); 
-	//			Vertices.add(V);
-	//		}
-	//
-	//		for (int i= 0; i < 6; i++){
-	//			System.out.println("this is vertex" + i +": " + Vertices.get(i).getTag());	
-	//		}
-	//
-	//		System.out.println("total vertex count: " + Vertices.size());	
-	//
-	//	}
 
 	public void fileOneReader(String patharg, ThemeParkGraph g){
 		try{
@@ -66,10 +41,10 @@ public class DataHandeler{
 					}
 					g.setVtotal(farr[0]);
 					g.setEtotal(farr[1]);	
-
 					//Create all vertices
 					g.Vertices = makeVertices(g.Vertices,g.totalVertices);
 					count++;
+					
 				}
 				else{
 					//create all edges
@@ -78,9 +53,11 @@ public class DataHandeler{
 					for(int x = 0; x < farr.length; x++){
 						System.out.println(farr[x]);
 					}
-					
-					Edge e = new Edge(g.Vertices.get(farr[0]),g.Vertices.get(farr[1]),farr[2]); // input to constructor vertices a,b and weight as int
+					// input to constructor vertices a,b and weight
+					//index starts at 0. retrieving V by index which is input val-1
+					Edge e = new Edge(g.Vertices.get(farr[0]-1),g.Vertices.get(farr[1]-1),farr[2]);  
 					g.Edges.add(e);
+
 				}
 
 			}
@@ -88,7 +65,6 @@ public class DataHandeler{
 			in.close();
 		}catch (Exception e){//Catch exception if any
 			System.err.println("Error: " + e.getMessage());}
-
 
 	}
 
@@ -100,6 +76,8 @@ public class DataHandeler{
 	public int [] tokenizeInputString(String inLine){
 		String currLine = inLine; 
 		int [] intTokens = new int [3];
+		DateFormat df = new SimpleDateFormat("HH.mm.ss");
+		Date time = null; 
 
 		System.out.println("currLine: " + currLine);
 
@@ -114,9 +92,16 @@ public class DataHandeler{
 		// if the string contains the time token
 		if (st.length == 3){
 			String timetoken = st[2];
-			timetoken = timetoken.replace("00:", "");
-			timetoken = timetoken.replace(":00", "");
-			intTokens[2] = Integer.parseInt(timetoken);
+			try {
+				time = (Date) df.parse(timetoken);
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			//timetoken = timetoken.replace("00:", "");
+			//timetoken = timetoken.replace(":00", "");
+			//intTokens[2] = Integer.parseInt(timetoken);
 		}
 
 		intTokens[0] = Integer.parseInt(st[0]);
@@ -136,11 +121,6 @@ public class DataHandeler{
 		}
 		return list;
 	}
-	
-//	public ArrayList <Edge> makeEdge(ArrayList <Edge> list, int total){
-//		Edge e = new Edge()
-//		return list;
-//	}
 
 }
 
