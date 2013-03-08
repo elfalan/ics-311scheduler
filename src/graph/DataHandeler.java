@@ -56,11 +56,11 @@ public class DataHandeler{
 			int count = 0;
 
 			//Read File Line By Line
-			while ((strLine = br.readLine()) != null)   {			
+			while ((strLine = br.readLine()) != null)   {	
+				int [] farr = new int[3];
 				if (count == 0){ //executes for the first line only
-					int [] farr = new int[3];
 					farr = tokenizeInputString(strLine);
-					System.out.println("printing farr token vals: ");
+					System.out.println("printing farr token vals - 1st line: ");
 					for(int x = 0; x < farr.length; x++){
 						System.out.println(farr[x]);
 					}
@@ -71,8 +71,17 @@ public class DataHandeler{
 					g.Vertices = makeVertices(g.Vertices,g.totalVertices);
 					count++;
 				}
-
-				//create all edges
+				else{
+					//create all edges
+					farr = tokenizeInputString(strLine);
+					System.out.println("printing farr token vals:");
+					for(int x = 0; x < farr.length; x++){
+						System.out.println(farr[x]);
+					}
+					
+					Edge e = new Edge(g.Vertices.get(farr[0]),g.Vertices.get(farr[1]),farr[2]); // input to constructor vertices a,b and weight as int
+					g.Edges.add(e);
+				}
 
 			}
 			//Close the input stream
@@ -91,8 +100,8 @@ public class DataHandeler{
 	public int [] tokenizeInputString(String inLine){
 		String currLine = inLine; 
 		int [] intTokens = new int [3];
-		System.out.println("currLine: " + currLine);
 
+		System.out.println("currLine: " + currLine);
 
 		currLine = currLine.replace("\t","_");
 		System.out.println("currLine: " + currLine);
@@ -113,24 +122,25 @@ public class DataHandeler{
 		intTokens[0] = Integer.parseInt(st[0]);
 		intTokens[1] = Integer.parseInt(st[1]);
 
-
-
 		System.out.println("intTokens ("+ intTokens.length +")");
 		for (int i = 0; i < intTokens.length ; i++){
 			System.out.println(i+1 +":" + intTokens[i]);
 		}
-
 		return intTokens;
 	}
 
 	public ArrayList<Vertex> makeVertices(ArrayList<Vertex> list, int total){
 		for (int i= 0; i < total; i++){
-			Vertex V = new Vertex(i); 
+			Vertex V = new Vertex(i+1); //vtag is set from constructor
 			list.add(V);
 		}
 		return list;
-
 	}
+	
+//	public ArrayList <Edge> makeEdge(ArrayList <Edge> list, int total){
+//		Edge e = new Edge()
+//		return list;
+//	}
 
 }
 
