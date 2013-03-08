@@ -27,6 +27,7 @@ public class Scheduler {
 			System.out.println("Total vertices: " + Graph.totalVertices);
 			System.out.println("Total edges: " + Graph.totalEdges);
 			
+			System.out.println("created "+ Graph.Vertices.size() + " vertices...");
 			System.out.println("Graphs vertices Readout:");
 			for (int i = 0 ; i < Graph.Vertices.size(); i ++){
 				System.out.println(Graph.Vertices.get(i).vTag);

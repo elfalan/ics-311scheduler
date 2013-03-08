@@ -55,7 +55,7 @@ public class DataHandeler{
 					}
 					// input to constructor vertices a,b and weight
 					//index starts at 0. retrieving V by index which is input val-1
-					Edge e = new Edge(g.Vertices.get(farr[0]-1),g.Vertices.get(farr[1]-1),farr[2]);  
+					Edge e = new Edge(g.Vertices.get((farr[0]-1)),g.Vertices.get((farr[1]-1)),farr[2]);  
 					g.Edges.add(e);
 
 				}
@@ -75,9 +75,9 @@ public class DataHandeler{
 	 */
 	public int [] tokenizeInputString(String inLine){
 		String currLine = inLine; 
-		int [] intTokens = new int [3];
-		DateFormat df = new SimpleDateFormat("HH.mm.ss");
-		Date time = null; 
+		int [] Tokens = new int [3];
+		//DateFormat df = new SimpleDateFormat("HH.mm.ss");
+		//Date time = null; 
 
 		System.out.println("currLine: " + currLine);
 
@@ -92,26 +92,25 @@ public class DataHandeler{
 		// if the string contains the time token
 		if (st.length == 3){
 			String timetoken = st[2];
-			try {
-				time = (Date) df.parse(timetoken);
-			} catch (ParseException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-			//timetoken = timetoken.replace("00:", "");
-			//timetoken = timetoken.replace(":00", "");
-			//intTokens[2] = Integer.parseInt(timetoken);
+//			try {
+//				time = (Date) df.parse(timetoken);
+//			} catch (ParseException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+			timetoken = timetoken.substring(0,5);
+			timetoken = timetoken.replace(":","");
+			Tokens[2] = Integer.parseInt(timetoken);
 		}
 
-		intTokens[0] = Integer.parseInt(st[0]);
-		intTokens[1] = Integer.parseInt(st[1]);
+		Tokens[0] = Integer.parseInt(st[0]);
+		Tokens[1] = Integer.parseInt(st[1]);
 
-		System.out.println("intTokens ("+ intTokens.length +")");
-		for (int i = 0; i < intTokens.length ; i++){
-			System.out.println(i+1 +":" + intTokens[i]);
+		System.out.println("intTokens ("+ Tokens.length +")");
+		for (int i = 0; i < Tokens.length ; i++){
+			System.out.println(i+1 +":" + Tokens[i]);
 		}
-		return intTokens;
+		return Tokens;
 	}
 
 	public ArrayList<Vertex> makeVertices(ArrayList<Vertex> list, int total){

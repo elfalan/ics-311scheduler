@@ -11,6 +11,7 @@ public class Edge {
 		weight = w;
 	}
 	
+	
 	public void setPath(Vertex v1, Vertex v2){
 		path[0] = v1;
 		path[1] = v2;
