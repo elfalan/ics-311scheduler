@@ -95,12 +95,6 @@ public class DataHandeler{
 		// if the string contains the time token
 		if (st.length == 3){
 			String timetoken = st[2];
-			//			try {
-			//				time = (Date) df.parse(timetoken);
-			//			} catch (ParseException e) {
-			//				// TODO Auto-generated catch block
-			//				e.printStackTrace();
-			//			}
 			timetoken = timetoken.substring(0,5);
 			timetoken = timetoken.replace(":","");
 			Tokens[2] = Integer.parseInt(timetoken);
@@ -124,7 +118,7 @@ public class DataHandeler{
 		return list;
 	}
 	/**
-	 * Code for handling file 2, attractions and time intervals
+	 * Code for handling file 2, Attractions and time intervals
 	 */
 
 	public void fileTwoReader(String patharg, ThemeParkGraph g){
@@ -139,7 +133,7 @@ public class DataHandeler{
 			int i = 0;
 			int j = 0;
 			int max = 0;
-			ArrayList <attraction> attrList = new ArrayList<attraction>();
+			ArrayList <Attraction> attrList = new ArrayList<Attraction>();
 
 			String [] strar = new String [6];
 
@@ -150,41 +144,80 @@ public class DataHandeler{
 					strar = tokenizeInput2String(strLine);
 
 					max = Integer.parseInt(strar[0]); //cast string to int
-					System.out.println("Creating (" + max + ") attractions - 1st line: ");
+					System.out.println("Creating (" + max + ") Attractions - 1st line: ");
 					while(j <= 7){
-						attraction a = new attraction();
+						Attraction a = new Attraction();
 						attrList.add(a);
 						j++;
 					}
 					count++;
 				}
 				else{
-					//pull attraction names and intervals, add to attractions
+					//pull Attraction names and intervals, add to Attractions
 					strar = tokenizeInput2String(strLine);
 					System.out.println("printing strar token vals");
 					for(int x = 0; x < strar.length; x++){
 						System.out.println("\n" + strar[x]);
 					}
-					
-					//add attributes to attraction
-//					String [] times = new String[4];
-//					for(int t = 0; t < 4; t++){
-//						times[t] = strar[t+2];
-//						System.out.println("val:"+strar[t+2]);
-//					}
+
+
 					ArrayList <String> times = new ArrayList<String>();
 					for(int t = 2; t < strar.length; t++){
 						times.add(strar[t]);
 						System.out.println("added time val:"+strar[t]);
 					}
-					
+
 					attrList.get(i).setAttributes(strar[0],strar[1], times);
-					System.out.println("added attributes to new attraction ");
-					attrList.get(i).printout();
+					System.out.println("added attributes to new Attraction ");
+				
+					//attrList.get(i).printout();
 					i++;
-					
+
 				}
+			}//end of readline
+			
+			String timeToken = "";
+			String time1 = "";
+			String time2 = "";
+			//covert intervals to int format
+			for(int k = 0; k < attrList.size()-1;k++){
+				//times is a string arraylist, needs to be split and coverted to int
+				for(int z = 0; z < attrList.get(k).times.size(); z++){	
+					if(z == 0){
+					timeToken = attrList.get(k).times.get(z);
+					timeToken = timeToken.substring(0,5);
+					timeToken = timeToken.replace(":","");
+					int d = Integer.parseInt(timeToken);
+					attrList.get(k).setDuration(d);
+					//System.out.println("duration set, iteration: " + z);
+					}
+					else{
+					timeToken = attrList.get(k).times.get(z);
+					//System.out.println("timetoken: " + timeToken);
+					//start time
+				    time1 = timeToken.substring(0, 5);
+					time1 = time1.replace(":","");
+					//System.out.println("start time" + time1);
+					int t1 = Integer.parseInt(time1);
+					//end time
+					time2 = timeToken.substring(9, 14);
+					time2 = time2.replace(":","");
+					int t2 = Integer.parseInt(time2);
+					
+					Interval I = new Interval(t1,t2);
+					attrList.get(k).intervalList.add(I);
+					}
+				}
+				System.out.println("+++++++++++++++++++++++++++++++\n");
+				System.out.println("Attraction ("+ (k+1) + ")");
+				attrList.get(k).printout();
 			}
+			System.out.println("\n");
+			System.out.println("Setting attractions to graph");
+			
+			//g.Vertices;
+
+
 			//Close the input stream
 			in.close();
 		}catch (Exception e){//Catch exception if any
@@ -199,7 +232,6 @@ public class DataHandeler{
 		input = input.replace("\t","_");
 		System.out.println("tokenize: current line" + input);
 		tokens = input.split("_");
-		
 
 		return tokens;
 	}
