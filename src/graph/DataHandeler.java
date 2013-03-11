@@ -19,7 +19,9 @@ public class DataHandeler{
 	public DataHandeler(){
 
 	}
-
+	/**
+	 * code for handling File 1, vertex and edge data
+	 */
 	public void fileOneReader(String patharg, ThemeParkGraph g){
 		try{
 			FileInputStream fstream = new FileInputStream(patharg); 
@@ -29,26 +31,26 @@ public class DataHandeler{
 			BufferedReader br = new BufferedReader(new InputStreamReader(in));
 			String strLine;
 			int count = 0;
-
+			int [] farr = new int[3];
 			//Read File Line By Line
 			while ((strLine = br.readLine()) != null)   {	
-				int [] farr = new int[3];
+
 				if (count == 0){ //executes for the first line only
-					farr = tokenizeInputString(strLine);
+					farr = tokenizeInput1String(strLine);
 					System.out.println("printing farr token vals - 1st line: ");
 					for(int x = 0; x < farr.length; x++){
 						System.out.println(farr[x]);
 					}
 					g.setVtotal(farr[0]);
 					g.setEtotal(farr[1]);	
+
 					//Create all vertices
 					g.Vertices = makeVertices(g.Vertices,g.totalVertices);
 					count++;
-					
 				}
 				else{
 					//create all edges
-					farr = tokenizeInputString(strLine);
+					farr = tokenizeInput1String(strLine);
 					System.out.println("printing farr token vals:");
 					for(int x = 0; x < farr.length; x++){
 						System.out.println(farr[x]);
@@ -59,8 +61,9 @@ public class DataHandeler{
 					g.Edges.add(e);
 
 				}
-
+				farr = null;
 			}
+
 			//Close the input stream
 			in.close();
 		}catch (Exception e){//Catch exception if any
@@ -73,7 +76,7 @@ public class DataHandeler{
 	 *support method for reader:gets the current line from file 1, and tokenize items,
 	 *all items are integers (format last item which to be read as int)
 	 */
-	public int [] tokenizeInputString(String inLine){
+	public int [] tokenizeInput1String(String inLine){
 		String currLine = inLine; 
 		int [] Tokens = new int [3];
 		//DateFormat df = new SimpleDateFormat("HH.mm.ss");
@@ -92,12 +95,12 @@ public class DataHandeler{
 		// if the string contains the time token
 		if (st.length == 3){
 			String timetoken = st[2];
-//			try {
-//				time = (Date) df.parse(timetoken);
-//			} catch (ParseException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
+			//			try {
+			//				time = (Date) df.parse(timetoken);
+			//			} catch (ParseException e) {
+			//				// TODO Auto-generated catch block
+			//				e.printStackTrace();
+			//			}
 			timetoken = timetoken.substring(0,5);
 			timetoken = timetoken.replace(":","");
 			Tokens[2] = Integer.parseInt(timetoken);
@@ -120,6 +123,87 @@ public class DataHandeler{
 		}
 		return list;
 	}
+	/**
+	 * Code for handling file 2, attractions and time intervals
+	 */
+
+	public void fileTwoReader(String patharg, ThemeParkGraph g){
+		try{
+			FileInputStream fstream = new FileInputStream(patharg); 
+
+			// Get the object of DataInputStream
+			DataInputStream in = new DataInputStream(fstream);
+			BufferedReader br = new BufferedReader(new InputStreamReader(in));
+			String strLine;
+			int count = 0;
+			int i = 0;
+			int j = 0;
+			int max = 0;
+			ArrayList <attraction> attrList = new ArrayList<attraction>();
+
+			String [] strar = new String [6];
+
+			//Read File Line By Line
+			while ((strLine = br.readLine()) != null)   {	
+
+				if (count == 0){ //executes for the first line only
+					strar = tokenizeInput2String(strLine);
+
+					max = Integer.parseInt(strar[0]); //cast string to int
+					System.out.println("Creating (" + max + ") attractions - 1st line: ");
+					while(j <= 7){
+						attraction a = new attraction();
+						attrList.add(a);
+						j++;
+					}
+					count++;
+				}
+				else{
+					//pull attraction names and intervals, add to attractions
+					strar = tokenizeInput2String(strLine);
+					System.out.println("printing strar token vals");
+					for(int x = 0; x < strar.length; x++){
+						System.out.println("\n" + strar[x]);
+					}
+					
+					//add attributes to attraction
+//					String [] times = new String[4];
+//					for(int t = 0; t < 4; t++){
+//						times[t] = strar[t+2];
+//						System.out.println("val:"+strar[t+2]);
+//					}
+					ArrayList <String> times = new ArrayList<String>();
+					for(int t = 2; t < strar.length; t++){
+						times.add(strar[t]);
+						System.out.println("added time val:"+strar[t]);
+					}
+					
+					attrList.get(i).setAttributes(strar[0],strar[1], times);
+					System.out.println("added attributes to new attraction ");
+					attrList.get(i).printout();
+					i++;
+					
+				}
+			}
+			//Close the input stream
+			in.close();
+		}catch (Exception e){//Catch exception if any
+			System.err.println("Error: " + e.getMessage());}
+
+	}	
+
+	public String [] tokenizeInput2String(String currLine){
+		String [] tokens = new String [6];
+		String input = currLine;
+		System.out.println("tokenize: current line" + input);
+		input = input.replace("\t","_");
+		System.out.println("tokenize: current line" + input);
+		tokens = input.split("_");
+		
+
+		return tokens;
+	}
+
 
 }
 

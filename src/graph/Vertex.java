@@ -5,7 +5,7 @@ import java.util.ArrayList;
 public class Vertex {
 
 	int vTag;
-	ArrayList Attrset = new ArrayList<attraction>();
+	ArrayList Attractions = new ArrayList<attraction>();
 	Edge[] inEdges;
 	Edge[] outEdges;
 	

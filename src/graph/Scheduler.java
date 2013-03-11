@@ -13,17 +13,21 @@ public class Scheduler {
 		
 		try{
 			//retrieve the file path arguments 
-			if(args.length != 1) {
-				System.err.println("Invalid command line, exactly one argument required");
+			if(args.length != 2) {
+				System.err.println("Invalid command line, two argument required");
 				System.exit(1);
 			}
 			
 			String filePath1 = args[0];
+			String filePath2 = args[1];
 			//String filePath2 = args[1];
 			
 			//file one reader specific to file path 1.
 			//reads and tokenizes items, then sets vertices edges and weights. 
+			
+			System.out.println("Extrapolating data from file 1...");
 			dh.fileOneReader(filePath1, Graph);
+			
 			System.out.println("Total vertices: " + Graph.totalVertices);
 			System.out.println("Total edges: " + Graph.totalEdges);
 			
@@ -38,6 +42,8 @@ public class Scheduler {
 				System.out.println(Graph.Edges.get(i).getReadout());
 			}
 			
+			System.out.println("Extrapolating data from file 2...");
+			dh.fileTwoReader(filePath2, Graph);
 			
 			
 		}catch (Exception e){//Catch exception if any
