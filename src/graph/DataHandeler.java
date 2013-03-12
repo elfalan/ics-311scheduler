@@ -61,11 +61,22 @@ public class DataHandeler{
 					g.Edges.add(e);
 
 				}
-				farr = null;
+				
 			}
-
 			//Close the input stream
 			in.close();
+			
+			for(int y = 0; y <g.Edges.size(); y++){
+				int sourceV = g.Edges.get(y).getDest().getTag();
+				g.Vertices.get(sourceV-1).addOutEdge(g.Edges.get(y));
+			}
+		
+			
+			
+			
+			//garbage collection
+			farr = null;
+				
 		}catch (Exception e){//Catch exception if any
 			System.err.println("Error: " + e.getMessage());}
 
@@ -175,7 +186,13 @@ public class DataHandeler{
 
 				}
 			}//end of readline
-			
+			//Close the input stream
+			in.close();
+			strar = null;
+		
+			/**
+			 * convert attraction interval from string to int
+			 */
 			String timeToken = "";
 			String time1 = "";
 			String time2 = "";
@@ -212,14 +229,21 @@ public class DataHandeler{
 				System.out.println("Attraction ("+ (k+1) + ")");
 				attrList.get(k).printout();
 			}
-			System.out.println("\n");
-			System.out.println("Setting attractions to graph");
 			
-			//g.Vertices;
-
-
-			//Close the input stream
-			in.close();
+			/**
+			 * Connect up pieces of graph, edges with vertices, attractions to vertices
+			 */
+			System.out.println("\n");
+			System.out.println("Setting attractions to Vertices");	
+			
+			int owner = 0;
+			for(int y = 0; y < attrList.size()-1; y++){
+				owner = ((Integer.parseInt(attrList.get(y).owner))-1); //get the owner of current attraction, owner-1 refers to array index at
+				g.Vertices.get(owner).Attractions.add(attrList.get(y)); //add current attraction to owner
+				
+				System.out.println("Vertex (" + g.Vertices.get(owner).vTag + ") has recieved attraction " + attrList.get(y).name);
+			}
+			
 		}catch (Exception e){//Catch exception if any
 			System.err.println("Error: " + e.getMessage());}
 
@@ -235,6 +259,10 @@ public class DataHandeler{
 
 		return tokens;
 	}
+	
+	
+	
+	
 
 
 }

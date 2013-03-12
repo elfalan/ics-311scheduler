@@ -26,15 +26,6 @@ public class Attraction {
 		duration = d;
 	}
 	
-	public void printattr(){
-		System.out.println(attributes[0]);
-		System.out.println(attributes[1]);
-		System.out.println(attributes[2]);
-		System.out.println(attributes[3]);
-		System.out.println(attributes[4]);
-		System.out.println(attributes[5]);
-		
-	}
 	
 	public void printout(){
 		System.out.println("Attraction Printout");
@@ -49,9 +40,5 @@ public class Attraction {
 		System.out.println("+++++++++++++++++++++++++++++++\n");
 	}
 	
-	public void convertTime(){
-		
-	}
-
 	
 }
