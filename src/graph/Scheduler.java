@@ -15,7 +15,8 @@ public class Scheduler {
 		
 		Conductor c = new Conductor(Graph);//conductor is the interface for graph and user-input
 		
-		String [] attrSelect = new String [3]; //raw input select
+		ArrayList <Attraction> attrSelect = new ArrayList<Attraction>(); //raw input select
+		int startTime = 0;
 		
 		
 		try{
@@ -70,18 +71,14 @@ public class Scheduler {
 			}
 			
 		/**
-		 * 	Manual feed of Attraction Selection and start time 
+		 * 	Seed Attraction Selection and start time 
 		 */
-//			System.out.println();
-//			attrSelect[0] = Graph.Attractions.get(0).name;
-//			attrSelect[1] = Graph.Attractions.get(1).name;
-//			attrSelect[2] = Graph.Attractions.get(2).name;
-//			
-//			System.out.println("selection 1: " + attrSelect[0]);//jurassic park
-//			System.out.println("selection 2: " + attrSelect[1]);//splash mountain
-//			System.out.println("selection 3: " + attrSelect[2]);//harry potter
+			 attrSelect = c.selector();
+			 startTime = c.setStartTime();
+			 System.out.println("Start-Time set to : " + startTime);
+			 
 			
-			c.selector();
+			
 			
 			
 		}catch (Exception e){//Catch exception if any
