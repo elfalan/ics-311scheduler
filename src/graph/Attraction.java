@@ -25,6 +25,9 @@ public class Attraction {
 	public void setDuration(int d){
 		duration = d;
 	}
+	public int getDuration(){
+		return duration;
+	}
 	
 	
 	public void printout(){

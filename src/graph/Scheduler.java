@@ -73,12 +73,20 @@ public class Scheduler {
 		/**
 		 * 	Seed Attraction Selection and start time 
 		 */
+			 //use input console to get selection
 			 attrSelect = c.selector();
 			 startTime = c.setStartTime();
 			 System.out.println("Start-Time set to : " + startTime);
+			 System.out.println();
+			 c.attractionPrint(attrSelect);
+			
+			 c.SortByDuration(attrSelect);
+			 System.out.println("**********After Sort**********");
+			 System.out.println();
 			 
-			
-			
+			 c.attractionPrint(attrSelect);
+			 
+			 
 			
 			
 		}catch (Exception e){//Catch exception if any
