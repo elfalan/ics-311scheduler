@@ -15,7 +15,9 @@ import java.util.Formatter;
 import java.util.List;
 import java.util.Scanner;
 public class DataHandeler{
-
+/**
+ * The DataHandeler takes the information from the file inputs and parses them into the custom objects
+ */
 	public DataHandeler(){
 
 	}
@@ -156,7 +158,7 @@ public class DataHandeler{
 
 					max = Integer.parseInt(strar[0]); //cast string to int
 					System.out.println("Creating (" + max + ") Attractions - 1st line: ");
-					while(j <= 7){
+					while(j <= max){ //max is total attractions to create
 						Attraction a = new Attraction();
 						attrList.add(a);
 						j++;
@@ -229,6 +231,11 @@ public class DataHandeler{
 				System.out.println("Attraction ("+ (k+1) + ")");
 				attrList.get(k).printout();
 			}
+			
+			attrList.remove(7);//fix null added at end
+			g.Attractions = attrList; //graph holds a reference to full list of attractions for selections
+			System.out.println("total attractions: " + g.Attractions.size());
+			
 			
 			/**
 			 * Connect up pieces of graph, edges with vertices, attractions to vertices
