@@ -75,7 +75,7 @@ public class Scheduler {
 		 */
 			 //use input console to get selection
 			 attrSelect = c.selector();
-			 startTime = c.setStartTime();
+			 
 			 System.out.println("Start-Time set to : " + startTime);
 			 System.out.println();
 			 c.attractionPrint(attrSelect);
@@ -83,11 +83,15 @@ public class Scheduler {
 			 c.SortByDuration(attrSelect);
 			 System.out.println("**********After Sort**********");
 			 System.out.println();
-			 
 			 c.attractionPrint(attrSelect);
+			 System.out.println();
+			 
+			 //start time must be set after intial sort of attractions to see if it fits interval
+			 startTime = c.setStartTime(attrSelect.get(0));//send the first attraction (longest duration) as constraint for start time
+			 System.out.println("Start Time succefully set to: " + startTime);
 			 
 			 
-			
+			 		
 			
 		}catch (Exception e){//Catch exception if any
 			System.err.println("Error: " + e.getMessage());

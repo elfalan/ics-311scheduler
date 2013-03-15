@@ -7,7 +7,7 @@ public class Attraction {
 	ArrayList <String> times = new ArrayList <String>();
 	//ArrayList <Integer> intervals = new ArrayList <Integer>();
 	ArrayList <Interval> intervalList = new ArrayList<Interval>();
-	Interval interval = new Interval();
+	//Interval interval = new Interval();
 	String owner;
 	String [] attributes;
 	int duration = 0;
