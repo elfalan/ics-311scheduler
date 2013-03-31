@@ -1,7 +1,9 @@
 package graph;
 
 import java.util.ArrayList;
-
+/*
+ * Abtract Vertex class
+ */
 public class Vertex {
 
 	int vTag;
