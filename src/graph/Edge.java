@@ -5,6 +5,10 @@ public class Edge {
 	Vertex [] path = new Vertex[2]; //two input vertices, source vi, dest vj
 	int weight;
 	
+	public Edge(){
+		
+	}
+	
 	public Edge(Vertex v1, Vertex v2, int w){
 		path[0] = v1;
 		path[1] = v2;

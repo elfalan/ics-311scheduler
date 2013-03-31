@@ -29,7 +29,6 @@ public class Attraction {
 		return duration;
 	}
 	
-	
 	public void printout(){
 		System.out.println("Attraction Printout");
 		System.out.println("owner: " + owner);
