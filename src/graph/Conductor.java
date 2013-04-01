@@ -181,8 +181,8 @@ public class Conductor {
 		int next = Integer.parseInt(a2.owner); 
 
 		//retrieve actual vertex
-		Vertex V1  = Vertices.get(current);//source vertex
-		Vertex UD = Vertices.get(next); //ultimate destination vertex of next attraction
+		Vertex Vs  = Vertices.get(current-1);//source vertex
+		Vertex UD = Vertices.get(next-1); //ultimate destination vertex of next attraction
 
 		Edge sourceE = new Edge();  //arbitrary edge
 		//int subs = V1.outEdges.size();
@@ -191,12 +191,19 @@ public class Conductor {
 		ArrayList <ArrayList <Edge>> MasterList = new ArrayList<ArrayList<Edge>>();
 
 		try{
-		
-			System.out.println("V1 edges:" + V1.outEdges.size());
+			System.out.println();
+			System.out.println("ultm Dest Vertex UD: " + UD.getTag());
 			
-		for(int x = 0; x < V1.outEdges.size(); x++){
+			System.out.println("Source Vertex Vs: " + Vs.getTag());
+			
+			System.out.println("Vs edges:" + Vs.outEdges.size());
+			Vs.outEdges = sortByWeight(Vs.outEdges);
+			
+			Vs.edgeOutRead();
+			
+		for(int x = 0; x < Vs.outEdges.size(); x++){
 
-			sourceE = V1.outEdges.get(x);	
+			sourceE = Vs.outEdges.get(x);	
 
 			path = recurseDepthSearch(visitSet,sourceE,UD); //visit set sent is empty, returns non empty set
 			MasterList.add(path);
@@ -205,7 +212,7 @@ public class Conductor {
 			System.out.println("MasterList Size" + MasterList.size());
 			int totalweight = 0;
 			for (int y = 0; y < (MasterList.get(0)).size(); y++){
-				System.out.println((MasterList.get(0).get(y)).getReadout());
+				(MasterList.get(0).get(y)).getReadout();
 				totalweight = totalweight + MasterList.get(0).get(y).weight;
 				System.out.println("total weight:" + totalweight);
 				
@@ -246,7 +253,7 @@ public class Conductor {
 					break;
 				}
 				else{
-				Edge e2 = sortByWeight(adj.outEdges);
+				Edge e2 = (sortByWeight(adj.outEdges)).get(0);
 				recurseDepthSearch(pathSet,e2,UD);
 				}
 			}
@@ -257,7 +264,7 @@ public class Conductor {
 
 
 	//returns the short edge
-	private Edge sortByWeight(ArrayList<Edge> edges){
+	private ArrayList <Edge> sortByWeight(ArrayList<Edge> edges){
 		
 		for(int i = 0; i < edges.size(); i++){
 			for(int j = 1; j < (edges.size()-i); j++){
@@ -268,7 +275,7 @@ public class Conductor {
 			}
 		}			
 
-		return edges.get(0);
+		return edges;
 	}
 	
 	

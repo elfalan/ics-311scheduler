@@ -40,6 +40,20 @@ public class Vertex {
 		return vTag;
 	}
 	
+//private ArrayList <Edge> sortByWeight(ArrayList<Edge> edges){
+//		
+//		for(int i = 0; i < edges.size(); i++){
+//			for(int j = 1; j < (edges.size()-i); j++){
+//				if(edges.get(j-1).weight > edges.get(j).weight){
+//					Edge temp = edges.remove(j-1);
+//					edges.add(j,temp);
+//				}
+//			}
+//		}			
+//
+//		return edges;
+//	}
+	
 //	Vertex(String label,Edge[] ingoing, Edge [] outgoing){
 //		
 //	}

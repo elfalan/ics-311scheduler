@@ -21,9 +21,9 @@ public class Edge {
 		path[1] = v2;
 	}
 	
-	public String getReadout(){
+	public void getReadout(){
 		String readout = path[0].vTag +"," + path[1].vTag + "," + weight;
-		return readout;
+		System.out.println(readout);
 	}
 	
 	public Vertex getSource(){

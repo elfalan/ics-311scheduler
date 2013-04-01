@@ -51,7 +51,7 @@ public class Scheduler {
 			System.out.println("created "+ Graph.Edges.size() + " edges...");
 			System.out.println("Graphs edges Readout of newly Created Edges:");
 			for (int i = 0 ; i < Graph.Edges.size(); i ++){
-				System.out.println(Graph.Edges.get(i).getReadout());
+				Graph.Edges.get(i).getReadout();
 			}
 
 			for(int i = 0; i < Graph.Vertices.size(); i++){
@@ -82,7 +82,7 @@ public class Scheduler {
 			System.out.println();
 			c.attractionPrint(attrSelect);
 
-			c.SortByDuration(attrSelect);
+			attrSelect = c.SortByDuration(attrSelect);
 			System.out.println("**********After Sort**********");
 			System.out.println();
 			c.attractionPrint(attrSelect);
@@ -103,6 +103,7 @@ public class Scheduler {
 		//	for (int i = 0; i < attrSelect.size(); i++){
 			timeKeep = c.updateTime(attrSelect.get(0),timeKeep);
 			System.out.println("current time after (" +  1 + ") attraction added:" + timeKeep);
+			
 			
 			try{
 			c.generateShortestPath(Graph.Vertices,Graph.Edges, attrSelect.get(0), attrSelect.get(1));

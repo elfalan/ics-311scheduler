@@ -69,7 +69,7 @@ public class DataHandeler{
 			in.close();
 			
 			for(int y = 0; y <g.Edges.size(); y++){
-				int sourceV = g.Edges.get(y).getDest().getTag();
+				int sourceV = g.Edges.get(y).getSource().getTag();
 				g.Vertices.get(sourceV-1).addOutEdge(g.Edges.get(y));
 			}
 		
