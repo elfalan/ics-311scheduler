@@ -193,79 +193,97 @@ public class Conductor {
 		try{
 			System.out.println();
 			System.out.println("ultm Dest Vertex UD: " + UD.getTag());
-			
+
 			System.out.println("Source Vertex Vs: " + Vs.getTag());
-			
+
 			System.out.println("Vs edges:" + Vs.outEdges.size());
 			Vs.outEdges = sortByWeight(Vs.outEdges);
-			
+
 			Vs.edgeOutRead();
-			
-		for(int x = 0; x < Vs.outEdges.size(); x++){
 
-			sourceE = Vs.outEdges.get(x);	
+			for(int x = 0; x < Vs.outEdges.size(); x++){
 
-			path = recurseDepthSearch(visitSet,sourceE,UD); //visit set sent is empty, returns non empty set
-			MasterList.add(path);
-		}
+				sourceE = Vs.outEdges.get(x);	
+				System.out.println("**Top Level** Sending source Edge: ");
+				sourceE.getReadout();
+				
+				path = recurseDepthSearch(visitSet,sourceE,UD); //visit set sent is empty, returns non empty set
+				MasterList.add(path);
+			}
 
 			System.out.println("MasterList Size" + MasterList.size());
 			int totalweight = 0;
-			for (int y = 0; y < (MasterList.get(0)).size(); y++){
-				(MasterList.get(0).get(y)).getReadout();
-				totalweight = totalweight + MasterList.get(0).get(y).weight;
-				System.out.println("total weight:" + totalweight);
+			for (int y = 0; y < MasterList.size(); y++){
+				System.out.println("Path #" + (y+1));
 				
+				for(int k = 0; k < MasterList.get(y).size(); k ++){
+					(MasterList.get(y).get(k)).getReadout();
+					totalweight = totalweight + MasterList.get(y).get(k).weight;
+					
+				}
+				System.out.println("total weight:" + totalweight);
+				totalweight = 0; //reset weight
 			}
-			
-			
+
+
 		}
 		catch(Exception e){
 			System.err.println("Error in gen method:" + e.getMessage() + "\n" + e.getCause());
 			e.printStackTrace();
 		}
-		
+
 	}
 
 	public ArrayList<Edge> recurseDepthSearch(ArrayList<Edge> pathSet, Edge e, Vertex UD){
-		boolean Found = false;
-		Vertex adj = new Vertex();
-		ArrayList<Edge> pathtaken = pathSet;
+		boolean ks = true;
+		Vertex Vs = e.getSource();
+		Vertex Vd = e.getDest(); 
 
-		while(Found != true){
-			adj = e.getDest();
-
-			if((adj).equals(UD)){
-				pathSet.add(e);
-				Found = true;
-			}
-			else{
-				pathSet.add(e);
-				
-				for(int i=0; i < adj.outEdges.size();i++){
-				if ((adj.outEdges.get(i).getDest()).equals(e.getSource()));  //if the edge returns back to the source, remove it 
-				adj.outEdges.remove(i);
-				}
-				
-				System.out.println("adj out: " + adj.outEdges.size());
-				if (adj.outEdges.isEmpty()){
-					Found = true;
-					break;
-				}
-				else{
-				Edge e2 = (sortByWeight(adj.outEdges)).get(0);
-				recurseDepthSearch(pathSet,e2,UD);
-				}
-			}
-
+		if(Vd.equals(UD)){
+			pathSet.add(e); //add edge and quit
+			System.out.println("Found Destination");
+			
 		}
-		return pathtaken;
+		else if (!Vd.equals(UD)){
+			//remove cycles
+			System.out.println("Current edges of V " + Vd.getTag());
+			for(int z = 0; z < Vd.outEdges.size(); z++){
+				Vd.outEdges.get(z).getReadout();	
+			}
+			//filter out
+			for(int x = 0; x < Vd.outEdges.size(); x++){
+				if (Vd.outEdges.get(x).getDest().equals(Vs)){
+					Vd.outEdges.remove(x);
+				}
+			}
+				System.out.println("After filter Vd:");
+				for(int z = 0; z < Vd.outEdges.size(); z++){
+					Vd.outEdges.get(z).getReadout();	
+				}
+			//check for direct path
+				for(int y = 0; y < Vd.outEdges.size(); y++){
+					if (Vd.outEdges.get(y).getDest().equals(UD)){
+						System.out.println("found Destination,2");
+						pathSet.add(Vd.outEdges.get(y));
+						ks = false;
+						break;
+					}
+				}
+				if (ks != false){ //if keep searching is true
+				System.out.println("making recursive call, sending edge:");
+				Vd.outEdges.get(0).getReadout();
+				recurseDepthSearch(pathSet,Vd.outEdges.get(0),UD); //take smallest weight as new edge for search, Dijkstra's Algorithm
+				}
+			}
+
+		
+		return pathSet;
 	}
 
 
 	//returns the short edge
 	private ArrayList <Edge> sortByWeight(ArrayList<Edge> edges){
-		
+
 		for(int i = 0; i < edges.size(); i++){
 			for(int j = 1; j < (edges.size()-i); j++){
 				if(edges.get(j-1).weight > edges.get(j).weight){
@@ -277,8 +295,8 @@ public class Conductor {
 
 		return edges;
 	}
-	
-	
+
+
 
 	//	public ArrayList<Attraction> SortByVertex(ArrayList <Attraction> attrList){
 	//		
