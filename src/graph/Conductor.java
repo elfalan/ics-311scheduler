@@ -220,31 +220,16 @@ public class Conductor {
 				}
 				System.out.println("total weight: " + totalweight);
 				map.put(totalweight,path);	
-				
+
 				//zero out variables
 				path.removeAll(Edges);
 				visitSet.removeAll(Edges);
 				totalweight = 0;
 
 			}
-	
-				System.out.println("weights: " + map.keySet().toString());
-		
 
-			//
-			//			System.out.println("MasterList Size" + MasterList.size());
-			//			int totalweight = 0;
-			//			for (int y = 0; y < MasterList.size(); y++){
-			//				System.out.println("Path #" + (y+1));
-			//				
-			//				for(int k = 0; k < (MasterList.get(y)); k ++){
-			//					(MasterList.get(y).get(k)).getReadout();
-			//					totalweight = totalweight + MasterList.get(y).get(k).weight;
-			//					
-			//				}
-			//				System.out.println("total weight:" + totalweight);
-			//				totalweight = 0; //reset weight
-			//			}
+			System.out.println("weights: " + map.keySet().toString());
+
 
 
 		}
@@ -267,6 +252,11 @@ public class Conductor {
 			//pathSet.add(e); //add edge and quit
 			System.out.println("Found Destination@1");
 			//return pathSet;
+			ks = false;
+		}
+		if(Vs.equals(UD)){
+			System.out.println("Found Destination@1");
+			pathSet.remove(0);
 			ks = false;
 		}
 		//else if (!Vd.equals(UD)){
