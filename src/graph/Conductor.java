@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.InputMismatchException;
+import java.util.Map;
 import java.util.Scanner;
+import java.util.TreeMap;
 
 public class Conductor {
 	int [] selection;
@@ -188,7 +190,8 @@ public class Conductor {
 		//int subs = V1.outEdges.size();
 		ArrayList<Edge> visitSet = new ArrayList<Edge>(); //collection of edges 
 		ArrayList <Edge> path = new ArrayList<Edge>();
-		ArrayList <ArrayList <Edge>> MasterList = new ArrayList<ArrayList<Edge>>();
+		Map<Integer, ArrayList<Edge>> map = new TreeMap<Integer, ArrayList<Edge>>();
+		int totalweight = 0;
 
 		try{
 			System.out.println();
@@ -206,24 +209,42 @@ public class Conductor {
 				sourceE = Vs.outEdges.get(x);	
 				System.out.println("**Top Level** Sending source Edge: ");
 				sourceE.getReadout();
-				
-				path = recurseDepthSearch(visitSet,sourceE,UD); //visit set sent is empty, returns non empty set
-				MasterList.add(path);
-			}
+				visitSet.add(sourceE);
 
-			System.out.println("MasterList Size" + MasterList.size());
-			int totalweight = 0;
-			for (int y = 0; y < MasterList.size(); y++){
-				System.out.println("Path #" + (y+1));
-				
-				for(int k = 0; k < MasterList.get(y).size(); k ++){
-					(MasterList.get(y).get(k)).getReadout();
-					totalweight = totalweight + MasterList.get(y).get(k).weight;
-					
+				path = recurseDepthSearch(visitSet,sourceE,UD); //visit initialized with first edge
+				System.out.println("Path #" + (x+1));
+
+				for(int y = 0; y < path.size();y++){	
+					path.get(y).getReadout();
+					totalweight = totalweight + path.get(y).weight;
 				}
-				System.out.println("total weight:" + totalweight);
-				totalweight = 0; //reset weight
+				System.out.println("total weight: " + totalweight);
+				map.put(totalweight,path);	
+				
+				//zero out variables
+				path.removeAll(Edges);
+				visitSet.removeAll(Edges);
+				totalweight = 0;
+
 			}
+	
+				System.out.println("weights: " + map.keySet().toString());
+		
+
+			//
+			//			System.out.println("MasterList Size" + MasterList.size());
+			//			int totalweight = 0;
+			//			for (int y = 0; y < MasterList.size(); y++){
+			//				System.out.println("Path #" + (y+1));
+			//				
+			//				for(int k = 0; k < (MasterList.get(y)); k ++){
+			//					(MasterList.get(y).get(k)).getReadout();
+			//					totalweight = totalweight + MasterList.get(y).get(k).weight;
+			//					
+			//				}
+			//				System.out.println("total weight:" + totalweight);
+			//				totalweight = 0; //reset weight
+			//			}
 
 
 		}
@@ -239,12 +260,17 @@ public class Conductor {
 		Vertex Vs = e.getSource();
 		Vertex Vd = e.getDest(); 
 
+
 		if(Vd.equals(UD)){
-			pathSet.add(e); //add edge and quit
-			System.out.println("Found Destination");
-			
+			//System.out.println("Adding Edge to Set:"); 
+			//e.getReadout();
+			//pathSet.add(e); //add edge and quit
+			System.out.println("Found Destination@1");
+			//return pathSet;
+			ks = false;
 		}
-		else if (!Vd.equals(UD)){
+		//else if (!Vd.equals(UD)){
+		else{	
 			//remove cycles
 			System.out.println("Current edges of V " + Vd.getTag());
 			for(int z = 0; z < Vd.outEdges.size(); z++){
@@ -256,27 +282,34 @@ public class Conductor {
 					Vd.outEdges.remove(x);
 				}
 			}
-				System.out.println("After filter Vd:");
-				for(int z = 0; z < Vd.outEdges.size(); z++){
-					Vd.outEdges.get(z).getReadout();	
-				}
+			System.out.println("After filter Vd:");
+			for(int z = 0; z < Vd.outEdges.size(); z++){
+				Vd.outEdges.get(z).getReadout();	
+			}
 			//check for direct path
-				for(int y = 0; y < Vd.outEdges.size(); y++){
-					if (Vd.outEdges.get(y).getDest().equals(UD)){
-						System.out.println("found Destination,2");
-						pathSet.add(Vd.outEdges.get(y));
-						ks = false;
-						break;
-					}
+			for(int y = 0; y < Vd.outEdges.size(); y++){
+				if (Vd.outEdges.get(y).getDest().equals(UD)){
+					System.out.println("Adding Edge to Set:"); 
+					Vd.outEdges.get(y).getReadout();
+					pathSet.add(Vd.outEdges.get(y));
+
+					System.out.println("found Destination@2");
+					ks = false;
+					break;
 				}
-				if (ks != false){ //if keep searching is true
+			}
+			if (ks != false){ //if keep searching is true
+
+				System.out.println("Adding Edge to Set:"); 
+				Vd.outEdges.get(0).getReadout();
+				pathSet.add(Vd.outEdges.get(0));
 				System.out.println("making recursive call, sending edge:");
 				Vd.outEdges.get(0).getReadout();
 				recurseDepthSearch(pathSet,Vd.outEdges.get(0),UD); //take smallest weight as new edge for search, Dijkstra's Algorithm
-				}
 			}
+		}
 
-		
+
 		return pathSet;
 	}
 
