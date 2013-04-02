@@ -128,7 +128,6 @@ public class Conductor {
 					System.err.println("Input start time is out of bounds." +
 							" Please specify a start-time between " + constraint1 + " and " + constraint2);
 					loop = true;
-
 				}
 
 				else{
@@ -176,8 +175,42 @@ public class Conductor {
 		TK = adjustTime(TK);
 		return TK;
 	}
+	
+	public boolean intervalCheck(int tk, Attraction a, boolean result){
+		Interval current = new Interval();
+		int end = 0;
+		int start = 0;
+		int duration = 0;
+		int sfd = 0;
+		int efd = 0;
+		
+		for(int i = 0; i < a.intervalList.size(); i ++){
+			current  = a.intervalList.get(i);
+			duration = a.duration;
+			end = current.endT;
+			start = current.startT;
+			
+			sfd = start/100;
+			sfd = (sfd*100)+59;
+			
+			efd = end/100;
+			sfd = (sfd*100);
+			
+			if(((tk > start)&&(tk < sfd))||((tk > efd)&&(tk < end))){
+				
+				if (tk <= end-duration){
+					result = true;//passed check, continue signal is true
+				}
+				
+			}
+				
+		}
+		
+		
+		return result;
+	}
 
-	public void generateShortestPath(ArrayList <Vertex> Vertices,ArrayList<Edge> Edges,Attraction a1, Attraction a2){
+	public Path generateShortestPath(ArrayList <Vertex> Vertices,ArrayList<Edge> Edges,Attraction a1, Attraction a2){
 
 		int current = Integer.parseInt(a1.owner);
 		int next = Integer.parseInt(a2.owner); 
@@ -189,8 +222,9 @@ public class Conductor {
 		Edge sourceE = new Edge();  //arbitrary edge
 		//int subs = V1.outEdges.size();
 		ArrayList<Edge> visitSet = new ArrayList<Edge>(); //collection of edges 
-		ArrayList <Edge> path = new ArrayList<Edge>();
-		Map<Integer, ArrayList<Edge>> map = new TreeMap<Integer, ArrayList<Edge>>();
+		ArrayList <Edge> fset = new ArrayList<Edge>();//final set of edges that will be saved
+		//Map<Integer, ArrayList<Edge>> map = new TreeMap<Integer, ArrayList<Edge>>();
+		ArrayList <Path> pathsCollection = new ArrayList <Path>();
 		int totalweight = 0;
 
 		try{
@@ -211,32 +245,40 @@ public class Conductor {
 				sourceE.getReadout();
 				visitSet.add(sourceE);
 
-				path = recurseDepthSearch(visitSet,sourceE,UD); //visit initialized with first edge
+				fset = recurseDepthSearch(visitSet,sourceE,UD); //visit initialized with first edge
 				System.out.println("Path #" + (x+1));
 
-				for(int y = 0; y < path.size();y++){	
-					path.get(y).getReadout();
-					totalweight = totalweight + path.get(y).weight;
+				for(int y = 0; y < fset.size();y++){	
+					fset.get(y).getReadout();
+					totalweight = totalweight + fset.get(y).weight;
 				}
 				System.out.println("total weight: " + totalweight);
-				map.put(totalweight,path);	
+				//map.put(totalweight,path);	
+				Path p = new Path(totalweight,fset);
+				pathsCollection.add(p);
 
 				//zero out variables
-				path.removeAll(Edges);
+				fset.removeAll(Edges);
 				visitSet.removeAll(Edges);
 				totalweight = 0;
+				p = null;
 
 			}
 
-			System.out.println("weights: " + map.keySet().toString());
+			//System.out.println("weights: " + map.keySet().toString());
+			System.out.println("\nSorted Generated Paths: " );
 
-
+			pathsCollection = sortByCost(pathsCollection);
+			for(int z = 0; z < pathsCollection.size(); z ++){
+				pathsCollection.get(z).readOut();
+			}
 
 		}
 		catch(Exception e){
 			System.err.println("Error in gen method:" + e.getMessage() + "\n" + e.getCause());
 			e.printStackTrace();
 		}
+		return pathsCollection.get(0); //return the shortest path
 
 	}
 
@@ -255,7 +297,7 @@ public class Conductor {
 			ks = false;
 		}
 		if(Vs.equals(UD)){
-			System.out.println("Found Destination@1");
+			System.out.println("Found Destination@1.1");
 			pathSet.remove(0);
 			ks = false;
 		}
@@ -304,7 +346,9 @@ public class Conductor {
 	}
 
 
-	//returns the short edge
+	/*
+	 * Method for Edges: returns the short edge
+	 */
 	private ArrayList <Edge> sortByWeight(ArrayList<Edge> edges){
 
 		for(int i = 0; i < edges.size(); i++){
@@ -320,19 +364,20 @@ public class Conductor {
 	}
 
 
-
-	//	public ArrayList<Attraction> SortByVertex(ArrayList <Attraction> attrList){
-	//		
-	//		for(int i = 0; i < attrList.size(); i++){
-	//			for(int j = 1; j < (attrList.size()-i); j++){
-	//				if(!(attrList.get(j-1).owner.equals(attrList.get(j).owner))){
-	//					Attraction a = attrList.remove(j-1);
-	//					attrList.add(j,a);
-	//				}
-	//			}
-	//		}			
-	//		return attrList;
-	//	}
+	/*
+	 * Method for Path: returns paths sorted by least total cost
+	 */
+	public ArrayList <Path> sortByCost(ArrayList <Path> paths){
+		for(int i = 0; i < paths.size(); i++){
+			for(int j = 1; j < (paths.size()-i); j++){
+				if((paths.get(j-1).getCost() > (paths.get(j).getCost()))){
+					Path p = paths.remove(j-1);
+					paths.add(j,p);
+				}
+			}
+		}			
+		return paths;
+	}
 
 
 	public void attractionPrint(ArrayList <Attraction> a){

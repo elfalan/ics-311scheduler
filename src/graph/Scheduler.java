@@ -91,28 +91,34 @@ public class Scheduler {
 			//start time must be set after intial sort of attractions to see if it fits interval
 			startTime = c.setStartTime(attrSelect.get(0));//send the first attraction (longest duration) as constraint for start time
 			System.out.println("Start Time succefully set to: " + startTime);
-			
+
 			/**
 			 * generate schedule
 			 */
 			timeKeep = startTime;
-			System.out.println("Attraction Selection:" + attrSelect.size());
-			System.out.println("Graph Vertices: " + Graph.Vertices.size());
-			System.out.println("Graph Edges: " + Graph.Edges.size());
-
-		//	for (int i = 0; i < attrSelect.size(); i++){
-			timeKeep = c.updateTime(attrSelect.get(0),timeKeep);
-			System.out.println("current time after (" +  1 + ") attraction added:" + timeKeep);
-			
-			
+			//			System.out.println("Attraction Selection:" + attrSelect.size());
+			//			System.out.println("Graph Vertices: " + Graph.Vertices.size());
+			//			System.out.println("Graph Edges: " + Graph.Edges.size());
 			try{
-			c.generateShortestPath(Graph.Vertices,Graph.Edges, attrSelect.get(0), attrSelect.get(1));
+				boolean signal = true; //used for interval check, if continue is true execute path generation
+
+				for (int i = 0; i < attrSelect.size()-1; i++){
+
+					timeKeep = c.updateTime(attrSelect.get(i),timeKeep);
+					signal = c.intervalCheck(timeKeep, attrSelect.get(i), signal);
+				
+					if (signal != false){
+						System.err.println("current time after (" +  (i+1) + ") attraction added:" + timeKeep);
+
+						c.generateShortestPath(Graph.Vertices,Graph.Edges, attrSelect.get(i), attrSelect.get(i+1));
+					}
+				}
 			}
 			catch(Exception e){
-				
+
 				System.err.println("error in shortest path method \n" + e.getCause() + e.getStackTrace().toString());
+
 			}
-		//	}
 
 
 
