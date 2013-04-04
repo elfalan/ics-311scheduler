@@ -161,7 +161,7 @@ public class Conductor {
 	/**
 	 * Main Computation Algorithms
 	 */
-	private int adjustTime(int t){
+	public int adjustTime(int t){
 		if(t%100 >= 60){
 			int temp = (t/100)*100;
 			t = (temp+100) + (t%100 - 60);
@@ -191,25 +191,30 @@ public class Conductor {
 			start = current.startT;
 			
 			sfd = start/100;
-			sfd = (sfd*100)+59;
+			sfd = (sfd*100)+59; //hr + max minutes
 			
 			efd = end/100;
-			sfd = (sfd*100);
+			efd = (efd*100); //beginning of end hr
+			System.out.println("+++++++++++++++++++");
+			System.out.println("start: " + start + "/" + sfd);
+			System.out.println("end: " + efd + "/" + end);
 			
-			if(((tk > start)&&(tk < sfd))||((tk > efd)&&(tk < end))){
+			if(((tk > start)&&(tk < sfd))||((tk > efd)&&(tk < end))){ //tk is between (start/start+max) and (end/end max) 
 				
-				if (tk <= end-duration){
+				if (tk <= end-duration){ //check if there is enough time left over for the ride duration
 					result = true;//passed check, continue signal is true
 				}
-				
-			}
-				
+				else{
+					result = false;
+				}
+			}	
 		}
 		
 		
 		return result;
 	}
 
+	//returns path with least weighted cost
 	public Path generateShortestPath(ArrayList <Vertex> Vertices,ArrayList<Edge> Edges,Attraction a1, Attraction a2){
 
 		int current = Integer.parseInt(a1.owner);
@@ -383,7 +388,7 @@ public class Conductor {
 	public void attractionPrint(ArrayList <Attraction> a){
 		System.out.println("Attraction printout:");
 		for (int i = 0; i < a.size(); i++){
-			System.out.println(a.get(i).name +" , "+ a.get(i).duration);
+			System.out.println(a.get(i).owner +" , "+ a.get(i).name +" , "+ a.get(i).duration);
 		}
 	}
 }

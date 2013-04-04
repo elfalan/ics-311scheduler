@@ -7,7 +7,8 @@ public class Path {
 	ArrayList <Edge> visited = new ArrayList<Edge>();
 	int cost = 0;
 
-
+	public Path(){}
+	
 	public Path(int c, ArrayList <Edge> Edges){
 		visited = Edges;
 		cost = c;

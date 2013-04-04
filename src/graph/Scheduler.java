@@ -100,17 +100,32 @@ public class Scheduler {
 			//			System.out.println("Graph Vertices: " + Graph.Vertices.size());
 			//			System.out.println("Graph Edges: " + Graph.Edges.size());
 			try{
-				boolean signal = true; //used for interval check, if continue is true execute path generation
+				boolean signal = false; //used for interval check, if continue is true execute path generation
 
 				for (int i = 0; i < attrSelect.size()-1; i++){
 
-					timeKeep = c.updateTime(attrSelect.get(i),timeKeep);
+					//timeKeep = c.updateTime(attrSelect.get(i),timeKeep);
+					System.out.println("Checking interval...");
 					signal = c.intervalCheck(timeKeep, attrSelect.get(i), signal);
 				
 					if (signal != false){
-						System.err.println("current time after (" +  (i+1) + ") attraction added:" + timeKeep);
-
-						c.generateShortestPath(Graph.Vertices,Graph.Edges, attrSelect.get(i), attrSelect.get(i+1));
+						
+						Path p = c.generateShortestPath(Graph.Vertices,Graph.Edges, attrSelect.get(i), attrSelect.get(i+1));
+						timeKeep = c.updateTime(attrSelect.get(i),timeKeep);
+						timeKeep = c.adjustTime(timeKeep);
+						System.out.println("current time after (" +  (i+1) + ") attraction added:" + timeKeep);
+						
+						System.out.println("Cost of Path: " + p.cost);
+						 timeKeep = timeKeep + p.cost;
+						 timeKeep = c.adjustTime(timeKeep);
+						 System.out.println("Current Timekeep: " + timeKeep);
+						
+						 
+						 p = null;
+					}
+					else if (signal == false){
+						System.err.println("Attraction (" + i + ") was rejected");
+						System.err.println("Current Timekeep: " + timeKeep);
 					}
 				}
 			}
