@@ -83,9 +83,9 @@ public class Conductor {
 		int t = 0;
 		boolean loop = true;
 		String temp = "";
-		int constraint1 = a.intervalList.get(0).startT;
-		int endTime = a.intervalList.get(0).endT;
-
+		int start = a.intervalList.get(0).startT;
+		int end = a.intervalList.get(0).endT;
+		
 		int hrs = (a.duration/100) * 100;
 		int mins = 0;
 
@@ -95,15 +95,19 @@ public class Conductor {
 		if(a.duration > 100){
 			mins = a.duration - hrs;
 		}
-
-		int constraint2 = a.intervalList.get(0).endT - hrs - mins ;
-		if(constraint2%100 >= 60){
-			constraint2 = constraint2 - (constraint2%100 - 30);
+		int endTime = a.intervalList.get(0).endT - hrs - mins ;
+		if(endTime%100 >= 60){
+			endTime = endTime - (endTime%100 - 30);
 		}
 
 		System.out.println("duration total:" + a.duration);
 		System.out.println("duration hrs:" + hrs);
 		System.out.println("duration mins:" + mins);
+		System.out.println("interval: " + start + " -- " + end);
+		System.out.println("actual interval: " + start + " -- " + endTime);
+		
+	
+		
 		//		int [][] inteverval = new int [a.intervalList.size()][]; //initiated to the size of availability times
 
 
@@ -114,7 +118,7 @@ public class Conductor {
 
 			while(loop != false){
 				System.out.println("For optimized shcedule, " +
-						"please specify a start time between [" + constraint1 + " and "+ constraint2 + "]. " +
+						"please specify a start time between [" + start + " and "+ endTime + "]. " +
 						"\n(format must be hh:mm:ss)");
 
 				temp = scan.next();
@@ -123,10 +127,10 @@ public class Conductor {
 				t = Integer.parseInt(temp);
 
 
-				if (((t < constraint1)||(t > constraint2))||(t%100 >= 60)){
+				if (((t < start)||(t > endTime))||(t%100 >= 60)){
 					System.err.println("Invalid Input:" + t);	
 					System.err.println("Input start time is out of bounds." +
-							" Please specify a start-time between " + constraint1 + " and " + constraint2);
+							" Please specify a start-time between " + start + " and " + endTime);
 					loop = true;
 				}
 
@@ -175,7 +179,7 @@ public class Conductor {
 		TK = adjustTime(TK);
 		return TK;
 	}
-	
+
 	public boolean intervalCheck(int tk, Attraction a, boolean result){
 		Interval current = new Interval();
 		int end = 0;
@@ -183,34 +187,70 @@ public class Conductor {
 		int duration = 0;
 		int sfd = 0;
 		int efd = 0;
-		
-		for(int i = 0; i < a.intervalList.size(); i ++){
+		int diff = 0;
+		int loopC = 0;
+		String interval = "";
+
+		for(int i = 0; i < a.intervalList.size(); i ++){ 
 			current  = a.intervalList.get(i);
+			interval = "Interval (" + (i+1) +") "+  current.startT + " -- " + current.endT;
+			System.out.println(interval);
+			
 			duration = a.duration;
-			end = current.endT;
+			end = current.endT - duration;
+			int firstdigit = end/100;
+			int numcheck = (firstdigit*100) + 59;
+			
+			if (end > numcheck){
+				end = adjustTime(end);
+			}
+			
 			start = current.startT;
 			
-			sfd = start/100;
-			sfd = (sfd*100)+59; //hr + max minutes
-			
-			efd = end/100;
-			efd = (efd*100); //beginning of end hr
+			interval = "Actual range Interval (" + (i+1) +") "+  start + " -- " + end;
+			System.out.println(interval);
+
+			//	efd = end/100;
+			//	efd = (efd*100); //beginning of end hr
 			System.out.println("+++++++++++++++++++");
-			System.out.println("start: " + start + "/" + sfd);
-			System.out.println("end: " + efd + "/" + end);
+			System.out.println("Current Time:" + tk);
+			System.out.println("Attraction: " + a.name);
 			
-			if(((tk > start)&&(tk < sfd))||((tk > efd)&&(tk < end))){ //tk is between (start/start+max) and (end/end max) 
+
+			diff = end - start;
+
+			System.out.println("difference:" + diff);
+
+			diff = diff - duration;
+
+			System.out.println("diff - dur: " + diff);
+
+			loopC = diff/5;
+
+			System.out.println("number of loops: " + loopC);
+			
+			int c = 0;
+			while (c <= loopC){
+
+				System.out.println("start: " + start + "/" + sfd);
+				System.out.println("end: " + efd + "/" + end);
+
+				if(((tk > start)&&(tk < sfd))||((tk > efd)&&(tk < end))){ //tk is between (start/start+max) and (end/end max) 
+
+					if (tk <= end-duration){ //check if there is enough time left over for the ride duration
+						result = true;//passed check, continue signal is true
+						break;
+					}
+					else{
+						result = false;
+					}
+				}
 				
-				if (tk <= end-duration){ //check if there is enough time left over for the ride duration
-					result = true;//passed check, continue signal is true
-				}
-				else{
-					result = false;
-				}
-			}	
+				c = c + 5;
+			}
 		}
-		
-		
+
+
 		return result;
 	}
 
