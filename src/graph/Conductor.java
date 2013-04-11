@@ -182,8 +182,10 @@ public class Conductor {
 
 	public int updateTime(Attraction a, int TK){
 		int d = a.duration;
+		System.out.println("update time... " + d + " + " + TK);
 		TK = TK + d;
 		TK = adjustTime(TK);
+		System.out.println("update time...total: " + TK);
 		return TK;
 	}
 
@@ -342,6 +344,8 @@ public class Conductor {
 		boolean ks = true;
 		Vertex Vs = e.getSource();
 		Vertex Vd = e.getDest(); 
+		
+		ArrayList <Edge> rejects = new ArrayList<Edge>(); 
 
 
 		if(Vd.equals(UD)){
@@ -367,6 +371,7 @@ public class Conductor {
 			//filter out
 			for(int x = 0; x < Vd.outEdges.size(); x++){
 				if (Vd.outEdges.get(x).getDest().equals(Vs)){
+					rejects.add(Vd.outEdges.get(x));
 					Vd.outEdges.remove(x);
 				}
 			}
@@ -382,6 +387,11 @@ public class Conductor {
 					pathSet.add(Vd.outEdges.get(y));
 
 					System.out.println("found Destination@2");
+					
+					for(int r = 0; r < rejects.size(); r++){
+						Vd.addOutEdge(rejects.get(r));
+						}
+					
 					ks = false;
 					break;
 				}
@@ -394,6 +404,11 @@ public class Conductor {
 				System.out.println("making recursive call, sending edge:");
 				Vd.outEdges.get(0).getReadout();
 				recurseDepthSearch(pathSet,Vd.outEdges.get(0),UD); //take smallest weight as new edge for search, Dijkstra's Algorithm
+				
+				for(int r = 0; r < rejects.size(); r++){
+				Vd.addOutEdge(rejects.get(r));
+				}
+				
 			}
 		}
 
