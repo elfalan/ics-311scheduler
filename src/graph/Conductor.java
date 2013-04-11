@@ -205,7 +205,7 @@ public class Conductor {
 		System.out.println("Attraction: " + a.name);
 		
 		for(int i = 0; i < a.intervalList.size(); i ++){ 
-			current  = a.intervalList.get(0);
+			current  = a.intervalList.get(i);
 			interval = "Interval (" + i +") "+  current.startT + " -- " + current.endT;
 			System.out.println(interval);
 			
@@ -260,7 +260,7 @@ public class Conductor {
 						result = false;
 						System.out.println("^^^^^^^^Interval NO MATCH^^^^^^^^");
 						//remove the non matching interval
-						a.intervalList.remove(0);
+						//a.intervalList.remove(0);
 					}
 				}
 

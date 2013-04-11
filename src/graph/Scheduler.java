@@ -106,71 +106,80 @@ public class Scheduler {
 
 				Attraction a_0 = attrSelect.get(i);
 				Attraction a_p = attrSelect.get(i+1);
+				int count = 0;
+				int cushion = 0;
 				
 				
-				ArrayList <Vertex> VerticesC1 = Graph.Vertices;
-				ArrayList <Edge> EdgesC1 = Graph.Edges;
+				//ArrayList <Vertex> VerticesC1 = Graph.Vertices;
+				//ArrayList <Edge> EdgesC1 = Graph.Edges;
 				
 				//interval for a_0 is good
 				timeKeep = c.updateTime(a_0,timeKeep); //calls adjust time
+				System.out.println("Current Timekeep: " + timeKeep);
+
 				
 				System.out.println("current time after (" +  (i) + ") attraction added:" + timeKeep);
 				attrSelect.remove(a_0);//remove the added item
 				
-				System.out.println("\n Finding Shortest Path (init) >>>");		
-				Path p = c.generateShortestPath(VerticesC1,EdgesC1, a_0, a_p);
+				//System.out.println("\n Finding Shortest Path (init) >>>");		
+				//Path p = c.generateShortestPath(VerticesC1,EdgesC1, a_0, a_p);
 				
-				System.out.println("Cost of Path from " + i  + " to " + (i+1)  + ": " + p.cost);
-				timeKeep = timeKeep + p.cost;
-				timeKeep = c.adjustTime(timeKeep);
-				System.out.println("Current Timekeep: " + timeKeep);
+				//System.out.println("Cost of Path from " + i  + " to " + (i+1)  + ": " + p.cost);
+				//timeKeep = timeKeep + p.cost;
+				//timeKeep = c.adjustTime(timeKeep);
+				//System.out.println("Current Timekeep: " + timeKeep);
 
 				
-				a_0 = a_p; //first item becomes second
-				a_p = attrSelect.get(1); //get third item
+				//a_0 = a_p; //first item becomes second
+				//a_p = attrSelect.get(1); //get third item
 				
 				
 
 				while(!(attrSelect.size() == 0)){
-					
-					
-					
-					System.out.println("\n Finding Shortest Path>>>");
-					System.out.println("\nFrom: " + a_0.name +"  to  "+ a_p.name);
-					System.out.println("\n ******List Size: " + attrSelect.size() + "\n Remaining to be added:");
-					for(int q = 0; q < attrSelect.size(); q++){
-						System.out.println( (1+q) + ". " + attrSelect.get(q).name);
-					}
-					
+							
 					ArrayList <Vertex> VerticesC2 = new ArrayList <Vertex>();
 					ArrayList <Edge> EdgesC2 = new ArrayList <Edge>();
 					VerticesC2 = Graph.Vertices;
 					EdgesC2 = Graph.Edges;
 					
-					Path p1 = c.generateShortestPath(VerticesC2,EdgesC2, a_0, a_p);
-
-					System.out.println("Checking interval...");	
+					
+					
+					System.out.println("Checking interval for a_p...");	
 					signal = c.intervalCheck(timeKeep, a_p, signal);
 					
 					if (signal != false){	
+								
 						timeKeep = c.updateTime(a_p,timeKeep);
 						timeKeep = c.adjustTime(timeKeep);
 						System.out.println("current time after (" +  (a_p.name) + ") attraction added:" + timeKeep);
+						
+						System.out.println("\n Finding Shortest Path>>>");
+						System.out.println("\nFrom: " + a_0.name +"  to  "+ a_p.name);
+						
+						
+						Path p1 = c.generateShortestPath(VerticesC2,EdgesC2, a_0, a_p);
+						
+						System.out.println("Current Timekeep: " + timeKeep);
 						System.out.println("Cost of Path: " + p1.cost);
 						timeKeep = timeKeep + p1.cost;
 						timeKeep = c.adjustTime(timeKeep);
 						System.out.println("Current Timekeep: " + timeKeep);
 
-						attrSelect.remove(a_0);
-						a_0 = a_p;
-						a_p = attrSelect.get(0);
+						a_0 = a_p;	
+						attrSelect.remove(a_0);//remove the previous item from master
+						if(attrSelect.size() > 1){
+						a_p = attrSelect.get(1);
+						}
 						
-						System.out.println("\n ******List Size: " + attrSelect.size());
+//						System.out.println("\n ******List Size: " + attrSelect.size() + "\n Remaining to be added:");
+//						for(int q = 0; q < attrSelect.size(); q++){
+//							System.out.println( (1+q) + ". " + attrSelect.get(q).name);
+//						}	
 						
 						if(attrSelect.size() == 1){
 							System.out.println("last attraction is being added...");
 							timeKeep = c.updateTime(a_0, timeKeep);
-							System.out.println("current time after (" +  (a_p.name) + ") attraction added:" + timeKeep);
+							System.out.println("current time after (" +  (a_0.name) + ") attraction added:" + timeKeep);
 							//System.out.println("Cost of Path: " + p1.cost);
 							//timeKeep = timeKeep + p1.cost;
 							timeKeep = c.adjustTime(timeKeep);
@@ -179,12 +188,14 @@ public class Scheduler {
 							endTime = timeKeep;
 							System.out.println("\n ******List Size: " + attrSelect.size());
 							System.out.println("End-Time: " + endTime);
+							System.out.println("Cushion of: " + (cushion*5) + " mins total added");
+							break;
 						}
-
 						
 					}
 
 					else if (signal == false){
+						
 						System.err.println("Attraction (" + a_p.name + ") was rejected");
 						//shuffle this attraction to the end of the list
 						Attraction temp = a_p;
@@ -193,12 +204,29 @@ public class Scheduler {
 						a_p = attrSelect.get(0);
 						attrSelect.add(temp);
 						System.err.println("Current Timekeep: " + timeKeep);
+						
+						//after five rejections, add 5 min
+						if(count > 5){
+							cushion++;
+							System.err.println("adjust time with cushion...adding 5 min...\n");
+							timeKeep = timeKeep + 5;
+							timeKeep = c.adjustTime(timeKeep);
+							System.err.println("Current Timekeep: " + timeKeep);
+						}
+						count++;
+						
+						
+					}
+					
+					if(timeKeep > 2400){
+					System.err.println("Sorry, there is no combination to fit all activities into the schedule for one day.");
+					break;
 					}
 				
-					//reset values for next loop cycle
-					p1 = null;
-					VerticesC2 = null;
-					EdgesC2 = null;
+//					//reset values for next loop cycle
+//					p1 = null;
+//					VerticesC2 = null;
+//					EdgesC2 = null;
 				}
 
 			}
