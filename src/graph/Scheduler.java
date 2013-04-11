@@ -19,6 +19,7 @@ public class Scheduler {
 
 		ArrayList <Attraction> attrSelect = new ArrayList<Attraction>(); //raw input select
 		int startTime = 0;
+		int endTime = 0;
 
 
 		try{
@@ -100,34 +101,85 @@ public class Scheduler {
 			//			System.out.println("Graph Vertices: " + Graph.Vertices.size());
 			//			System.out.println("Graph Edges: " + Graph.Edges.size());
 			try{
-				boolean signal = false; //used for interval check, if continue is true execute path generation
-
-				for (int i = 0; i < attrSelect.size()-1; i++){
-
-					//timeKeep = c.updateTime(attrSelect.get(i),timeKeep);
-					System.out.println("Checking interval...");
-					signal = c.intervalCheck(timeKeep, attrSelect.get(i), signal);
+				boolean signal = true; //used for interval check, if continue is true execute path generation
+				int i = 0;
+				ArrayList <Attraction> attrCopy = attrSelect;
+				Attraction a_0 = attrSelect.get(i);
+				Attraction a_p = attrSelect.get(i+1);
+				System.out.println("\n Finding Shortest Path (init) >>>");		
 				
-					if (signal != false){
-						
-						Path p = c.generateShortestPath(Graph.Vertices,Graph.Edges, attrSelect.get(i), attrSelect.get(i+1));
-						timeKeep = c.updateTime(attrSelect.get(i),timeKeep);
+				ArrayList <Vertex> VerticesC1 = Graph.Vertices;
+				ArrayList <Edge> EdgesC1 = Graph.Edges;
+	
+				Path p = c.generateShortestPath(VerticesC1,EdgesC1, a_0, a_p);
+
+				timeKeep = c.updateTime(a_0,timeKeep); //calls adjust time
+				//timeKeep = c.adjustTime(timeKeep);
+				System.out.println("current time after (" +  (i) + ") attraction added:" + timeKeep);
+				System.out.println("Cost of Path from " + i  + " to " + (i+1)  + ": " + p.cost);
+				timeKeep = timeKeep + p.cost;
+				timeKeep = c.adjustTime(timeKeep);
+				System.out.println("Current Timekeep: " + timeKeep);
+
+				attrSelect.remove(a_0);
+				a_0 = a_p; //first item becomes second
+				a_p = attrSelect.get(1); //get third item
+
+
+				while(!(attrSelect.isEmpty())){
+					
+					System.out.println("\n Finding Shortest Path>>>");
+					System.out.println("\nFrom: " + a_0.name +"  to  "+ a_p.name);
+					
+					ArrayList <Vertex> VerticesC2 = Graph.Vertices;
+					ArrayList <Edge> EdgesC2 = Graph.Edges;
+					Path p1 = c.generateShortestPath(VerticesC2,EdgesC2, a_0, a_p);
+
+					System.out.println("Checking interval...");	
+					signal = c.intervalCheck(timeKeep, a_p, signal);
+					
+					if (signal != false){	
+						timeKeep = c.updateTime(a_p,timeKeep);
 						timeKeep = c.adjustTime(timeKeep);
-						System.out.println("current time after (" +  (i+1) + ") attraction added:" + timeKeep);
+						System.out.println("current time after (" +  (a_p.name) + ") attraction added:" + timeKeep);
+						System.out.println("Cost of Path: " + p1.cost);
+						timeKeep = timeKeep + p1.cost;
+						timeKeep = c.adjustTime(timeKeep);
+						System.out.println("Current Timekeep: " + timeKeep);
+
+						attrSelect.remove(a_0);
+						a_0 = a_p;
+						a_p = attrSelect.get(0);
 						
-						System.out.println("Cost of Path: " + p.cost);
-						 timeKeep = timeKeep + p.cost;
-						 timeKeep = c.adjustTime(timeKeep);
-						 System.out.println("Current Timekeep: " + timeKeep);
-						
-						 
-						 p = null;
+						if(attrSelect.size() == 1){
+							System.out.println("last attraction is being added...");
+							timeKeep = c.updateTime(a_0, timeKeep);
+							System.out.println("current time after (" +  (a_p.name) + ") attraction added:" + timeKeep);
+							//System.out.println("Cost of Path: " + p1.cost);
+							//timeKeep = timeKeep + p1.cost;
+							timeKeep = c.adjustTime(timeKeep);
+							System.out.println("Current Timekeep: " + timeKeep);
+							attrSelect.remove(a_0);
+							endTime = timeKeep;
+							System.out.println("End-Time: " + endTime);
+						}
+
+						//reset values
+						p1 = null;
 					}
+
 					else if (signal == false){
-						System.err.println("Attraction (" + i + ") was rejected");
+						System.err.println("Attraction (" + a_p.name + ") was rejected");
+						//shuffle this attraction to the end of the list
+						Attraction temp = a_p;
+						attrSelect.remove(0);
+						int last = attrSelect.size()-1;
+						attrSelect.add(last, temp);
 						System.err.println("Current Timekeep: " + timeKeep);
 					}
+					i++;
 				}
+
 			}
 			catch(Exception e){
 

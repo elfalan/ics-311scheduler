@@ -172,6 +172,13 @@ public class Conductor {
 		}
 		return t;
 	}
+	
+	public int adjustTimeSub(int t){
+		if(t%100 >= 60){
+				t = t - (t%100 - 30);
+		}
+		return t;
+	}
 
 	public int updateTime(Attraction a, int TK){
 		int d = a.duration;
@@ -191,65 +198,69 @@ public class Conductor {
 		int loopC = 0;
 		String interval = "";
 
+		System.out.println("+++++++++++++++++++");
+		System.out.println("Current Time:" + tk);
+		System.out.println("Attraction: " + a.name);
+		
 		for(int i = 0; i < a.intervalList.size(); i ++){ 
-			current  = a.intervalList.get(i);
-			interval = "Interval (" + (i+1) +") "+  current.startT + " -- " + current.endT;
+			current  = a.intervalList.get(0);
+			interval = "Interval (" + i +") "+  current.startT + " -- " + current.endT;
 			System.out.println(interval);
 			
+			//check that after subtracting the duration time is adjusted
 			duration = a.duration;
 			end = current.endT - duration;
-			int firstdigit = end/100;
-			int numcheck = (firstdigit*100) + 59;
 			
-			if (end > numcheck){
-				end = adjustTime(end);
-			}
+			end = adjustTimeSub(end);
+			
+			//int firstdigit = end/100;
+			//int numcheck = (firstdigit*100) + 59;
+			
+			//if (end > numcheck){
+			//	end = adjustTime(end);
+			//}
 			
 			start = current.startT;
 			
-			interval = "Actual range Interval (" + (i+1) +") "+  start + " -- " + end;
+			interval = "Actual range Interval (" + (i) +") "+  start + " -- " + end;
 			System.out.println(interval);
 
 			//	efd = end/100;
 			//	efd = (efd*100); //beginning of end hr
-			System.out.println("+++++++++++++++++++");
-			System.out.println("Current Time:" + tk);
-			System.out.println("Attraction: " + a.name);
 			
-
+			//interval total
 			diff = end - start;
+			int hrs = (diff/100)*100;
+			int mins = 0;
 
-			System.out.println("difference:" + diff);
+			if(diff < 100){
+				mins = diff;
+			}
+			if(diff > 100){
+				mins = diff - hrs;
+			}
 
-			diff = diff - duration;
+			System.out.println("difference: " + "hrs: " + hrs + " mins: " + mins);
 
-			System.out.println("diff - dur: " + diff);
-
-			loopC = diff/5;
-
-			System.out.println("number of loops: " + loopC);
 			
-			int c = 0;
-			while (c <= loopC){
+				tk = adjustTime(tk);
+				efd = start + hrs + mins;
+				efd = adjustTime(efd);
 
-				System.out.println("start: " + start + "/" + sfd);
-				System.out.println("end: " + efd + "/" + end);
-
-				if(((tk > start)&&(tk < sfd))||((tk > efd)&&(tk < end))){ //tk is between (start/start+max) and (end/end max) 
-
-					if (tk <= end-duration){ //check if there is enough time left over for the ride duration
+		//		if(((tk > start)&&(tk < sfd))||((tk > efd)&&(tk < end))){ //tk is between (start/start+max) and (end/end max) 
+				if((tk >= start)&&(tk <= efd)){
+					//if (tk <= end-duration){ //check if there is enough time left over for the ride duration
+						System.out.println("*******Interval Range GOOD*******");
 						result = true;//passed check, continue signal is true
 						break;
 					}
 					else{
 						result = false;
+						System.out.println("^^^^^^^^Interval NO MATCH^^^^^^^^");
+						//remove the non matching interval
+						a.intervalList.remove(0);
 					}
 				}
-				
-				c = c + 5;
-			}
-		}
-
 
 		return result;
 	}
@@ -320,7 +331,7 @@ public class Conductor {
 
 		}
 		catch(Exception e){
-			System.err.println("Error in gen method:" + e.getMessage() + "\n" + e.getCause());
+			System.err.println("Error in gen method:" + e.getMessage() + "\n" + e.getCause() + "\n" + e.getStackTrace().toString());
 			e.printStackTrace();
 		}
 		return pathsCollection.get(0); //return the shortest path
