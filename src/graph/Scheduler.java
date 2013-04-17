@@ -97,10 +97,30 @@ public class Scheduler {
 			 * generate schedule
 			 */
 			timeKeep = startTime;
+			
+			
+			
+			
 			//			System.out.println("Attraction Selection:" + attrSelect.size());
 			//			System.out.println("Graph Vertices: " + Graph.Vertices.size());
 			//			System.out.println("Graph Edges: " + Graph.Edges.size());
 			try{
+				
+				if(attrSelect.size() == 1){
+					System.out.println("Only one attraction being added...");
+					timeKeep = c.updateTime(attrSelect.get(0), timeKeep);
+					System.out.println("current time after (" +  (attrSelect.get(0).name) + ") attraction added:" + timeKeep);
+					timeKeep = c.adjustTime(timeKeep);
+					System.out.println("Current Timekeep: " + timeKeep);
+					attrSelect.clear();
+					endTime = timeKeep;
+					System.out.println("\n ******List Size: " + attrSelect.size());
+					System.out.println("End-Time: " + endTime);
+					//System.out.println("Cushion of: " + (cushion*5) + " mins total added");
+					
+				}
+				else{
+				
 				boolean signal = true; //used for interval check, if continue is true execute path generation
 				int i = 0;
 
@@ -228,8 +248,12 @@ public class Scheduler {
 //					VerticesC2 = null;
 //					EdgesC2 = null;
 				}
+			
 
 			}
+			}
+			
+		
 			catch(Exception e){
 
 				System.err.println("error in shortest path method \n" + e.getCause() + e.getStackTrace().toString());
@@ -241,6 +265,7 @@ public class Scheduler {
 		}catch (Exception e){//Catch exception if any
 			System.err.println("Error in Main: " + e.getMessage());
 		}
+		
 	}
 
 }
